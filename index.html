@@ -583,6 +583,8 @@ async function poll() {
 			await checkConnected();
 			return;
 		}
+	}
+	if (account) {
 		await updateBalance();
 	}
 }
