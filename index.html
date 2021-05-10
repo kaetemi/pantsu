@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <link rel="shortcut icon" href="./pantsu_round.png" />
@@ -60,7 +60,7 @@ main {
 	margin: 0 auto;
 	padding: 40px 20px 20px 20px;
 	background-color: white;
-	//box-shadow: 0 0 10px rgba(133, 7, 70, 0.125);
+	/* box-shadow: 0 0 10px rgba(133, 7, 70, 0.125); */
 	border-style: solid;
 	border-width: 0 2px 80px 2px;
 	border-color: #fba9d2;
@@ -348,16 +348,16 @@ main h1 img {
 	<div class="wwsource"><div class="wsource"><a id="pantsulink" href="https://yande.re/post/show/263733" target="_blank" class="source">View&nbsp;&nbsp;<i class="fa fa-external-link-alt"></i></a></div></div>
 	<!--<p class="nomargin">&nbsp;</p>-->
 	<div id="onboardbox" class="pad">
-		<p hidden="true" id="badchain">Please switch your wallet to the Binance Smart Chain.</p>
-		<a class="fatbutton quarteropacitydisabled" href="javascript:connectMetaMask(window.ethereum)" id="onboardbutton">Connect with MetaMask <small>(Recommended)<small></a>
+		<p hidden id="badchain">Please switch your wallet to the Binance Smart Chain.</p>
+		<a class="fatbutton quarteropacitydisabled" href="javascript:connectMetaMask(window.ethereum)" id="onboardbutton">Connect with MetaMask <small>(Recommended)</small></a>
 		<a class="fatbutton quarteropacitydisabled" href="javascript:connectMetaMask(window.BinanceChain)" id="onboardbutton2">Connect with Binance Smart Wallet</a>
 		<p class="center">Desktop — <a href="https://academy.binance.com/en/articles/connecting-metamask-to-binance-smart-chain" target="_blank">Install MetaMask <small>(Recommended)</small> &nbsp;<i class="fa fa-external-link-alt"></i></a>, <a href="https://www.binance.com/en/wallet-direct" target="_blank">Install Binance Smart Wallet&nbsp;&nbsp;<i class="fa fa-external-link-alt"></i></a></p>
 		<p class="center">Mobile — <a href="https://academy.binance.com/en/articles/connecting-trust-wallet-to-binance-smart-chain-bsc" target="_blank">Install Trust Wallet&nbsp;&nbsp;<i class="fa fa-external-link-alt"></i></a></p>
 	</div>
-	<div hidden="true" id="walletbox" class="pad">
+	<div hidden id="walletbox" class="pad">
 		<div class="dwalletbox">
 			<p>Account: <a href="https://bscscan.com/" target="_blank" id="accountlink"><span id="accountname">...</span> &nbsp;<i class="fa fa-external-link-alt"></i></a></p>
-			<p>Balance: <span id="balancetext">...</span> PANTSU <span hidden="true" id="testnet"><em>(Testnet)</em></span> <span class="walletbutton"><a href="javascript:addToken()">Add to wallet</a></span></p>
+			<p>Balance: <span id="balancetext">...</span> PANTSU <span hidden id="testnet"><em>(Testnet)</em></span> <span class="walletbutton"><a href="javascript:addToken()">Add to wallet</a></span></p>
 		</div>
 		<form class="tipbox">
 			<input class="tipaddress" id="tipaddress" placeholder="Recipient Address" type="text"><input class="tipbutton" type="button" onclick="tip()" value="Tip PANTSU">
@@ -596,7 +596,7 @@ async function faucet() {
 	click.src = "./confirm.svg";
 	try {
 		await contract.methods.faucet().send({
-			gasPrice: '8500000000', // 8.5 gwei, hardcoded for now
+			// gasPrice: '12000000000', // 12 gwei, hardcoded for now
 		});
 		console.log("Transaction confirmed");
 	} finally {
@@ -609,7 +609,7 @@ async function tip() {
 	console.log('Tip PANTSU');
 	const tipaddress = document.getElementById('tipaddress');
 	await contract.methods.faucetTo(tipaddress.value).send({
-		gasPrice: '8500000000', // 8.5 gwei, hardcoded for now
+		// gasPrice: '12000000000', // 12 gwei, hardcoded for now
 	});
 	console.log("Transaction confirmed");
 }
@@ -624,8 +624,9 @@ async function poll() {
 			const accounts = await wallet.request({ method: 'eth_accounts' });
 			const newChainId = await wallet.request({ method: 'eth_chainId' });
 			if (accounts.length == 0 || accounts[0] != account || chainId != newChainId) {
+				const binanceWallet = (wallet == window.BinanceChain);
 				await disconnectedMetaMask();
-				await checkConnected(true);
+				await checkConnected(binanceWallet);
 				polling = false;
 				return;
 			}
