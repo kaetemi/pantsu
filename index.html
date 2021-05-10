@@ -349,8 +349,10 @@ main h1 img {
 	<!--<p class="nomargin">&nbsp;</p>-->
 	<div id="onboardbox" class="pad">
 		<p hidden="true" id="badchain">Please switch your wallet to the Binance Smart Chain.</p>
-		<a class="fatbutton quarteropacitydisabled" href="javascript:connectMetaMask()" id="onboardbutton">Connect with MetaMask</a>
-		<p class="center"><a href="https://academy.binance.com/en/articles/connecting-metamask-to-binance-smart-chain" target="_blank">Install MetaMask&nbsp;&nbsp;<i class="fa fa-external-link-alt"></i></a></p>
+		<a class="fatbutton quarteropacitydisabled" href="javascript:connectMetaMask(window.ethereum)" id="onboardbutton">Connect with MetaMask <small>(Recommended)<small></a>
+		<a class="fatbutton quarteropacitydisabled" href="javascript:connectMetaMask(window.BinanceChain)" id="onboardbutton2">Connect with Binance Smart Wallet</a>
+		<p class="center">Desktop — <a href="https://academy.binance.com/en/articles/connecting-metamask-to-binance-smart-chain" target="_blank">Install MetaMask <small>(Recommended)</small> &nbsp;<i class="fa fa-external-link-alt"></i></a>, <a href="https://www.binance.com/en/wallet-direct" target="_blank">Install Binance Smart Wallet&nbsp;&nbsp;<i class="fa fa-external-link-alt"></i></a></p>
+		<p class="center">Mobile — <a href="https://academy.binance.com/en/articles/connecting-trust-wallet-to-binance-smart-chain-bsc" target="_blank">Install Trust Wallet&nbsp;&nbsp;<i class="fa fa-external-link-alt"></i></a></p>
 	</div>
 	<div hidden="true" id="walletbox" class="pad">
 		<div class="dwalletbox">
@@ -438,28 +440,49 @@ const thumbnails = [
 	778214, 778290, 780224, 780733,
 ];
 let thumbnailIdx;
+let wallet;
 let account;
 let web3;
 let contract;
 let balance = '0';
-async function checkConnected() {
+async function checkConnected(force) {
 	const onboardButton = document.getElementById('onboardbutton');
 	if (typeof window.ethereum !== 'undefined') {
 		console.log('MetaMask is installed');
 		const accounts = await window.ethereum.request({ method: 'eth_accounts' });
 		if (accounts.length > 0) {
 			console.log('MetaMask is already connected');
-			connectMetaMask();
+			connectMetaMask(window.ethereum);
+			return;
 		} else {
 			onboardButton.classList.remove("quarteropacitydisabled");
 		}
 	} else {
+		onboardButton.classList.add("quarteropacitydisabled");
 		console.log('MetaMask is not installed...');
-		console.log(window.ethereum);
+	}
+	const onboardButton2 = document.getElementById('onboardbutton2');
+	if (typeof window.BinanceChain !== 'undefined') {
+		console.log('Binance Smart Wallet is installed');
+		if (force) {
+			const accounts = await window.BinanceChain.request({ method: 'eth_accounts' });
+			if (accounts.length > 0) {
+				console.log('Binance Smart Wallet is already connected');
+				connectMetaMask(window.BinanceChain);
+				return;
+			} else {
+				onboardButton2.classList.remove("quarteropacitydisabled");
+			}
+		} else {
+			onboardButton2.classList.remove("quarteropacitydisabled");
+		}
+	} else {
+		onboardButton2.classList.add("quarteropacitydisabled");
+		console.log('Binance Smart Wallet is not installed...');
 	}
 }
 async function addToken() {
-	const wasAdded = await window.ethereum.request({
+	const wasAdded = await wallet.request({
 		method: 'wallet_watchAsset',
 		params: {
 			type: 'ERC20',
@@ -472,10 +495,11 @@ async function addToken() {
 		},
 	});
 }
-async function connectMetaMask() {
-	web3 = new Web3(window.ethereum);
-	const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-	const newChainId = await window.ethereum.request({ method: 'eth_chainId' });
+async function connectMetaMask(w) {
+	wallet = w;
+	web3 = new Web3(wallet);
+	const accounts = await wallet.request({ method: 'eth_requestAccounts' });
+	const newChainId = await wallet.request({ method: 'eth_chainId' });
 	if (newChainId == 56) { // Binance Smart Chain Mainnet
 		tokenAddress = tokenAddressMainnet;
 		const testnet = document.getElementById('testnet');
@@ -524,6 +548,7 @@ async function connectMetaMask() {
 async function disconnectedMetaMask() {
 	chainId = null;
 	account = null;
+	wallet = null;
 	
 	const onboardBox = document.getElementById('onboardbox');
 	onboardBox.hidden = false;
@@ -588,21 +613,34 @@ async function tip() {
 	});
 	console.log("Transaction confirmed");
 }
+let polling = false;
 async function poll() {
-	if (account || badChain) {
-		const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-		const newChainId = await window.ethereum.request({ method: 'eth_chainId' });
-		if (accounts.length == 0 || accounts[0] != account || chainId != newChainId) {
-			await disconnectedMetaMask();
-			await checkConnected();
-			return;
-		}
+	if (polling) {
+		return;
 	}
-	if (account) {
-		await updateBalance();
+	polling = true;
+	try {
+		if (account || badChain) {
+			const accounts = await wallet.request({ method: 'eth_accounts' });
+			const newChainId = await wallet.request({ method: 'eth_chainId' });
+			if (accounts.length == 0 || accounts[0] != account || chainId != newChainId) {
+				await disconnectedMetaMask();
+				await checkConnected(true);
+				polling = false;
+				return;
+			}
+		}
+		if (account) {
+			await updateBalance();
+		}
+	} finally {
+		polling = false;
 	}
 }
-window.addEventListener('DOMContentLoaded', checkConnected);
+function checkConnectedFalse() {
+	checkConnected(false);
+}
+window.addEventListener('DOMContentLoaded', checkConnectedFalse);
 setInterval(poll, 3000);
 </script>
 </body>
