@@ -363,7 +363,7 @@ main h1 img {
 	</div>
 	<div class="padleftright">
 	<h2>PANTSU</h2>
-	<p>PANTSU is an inflationary anime crypto meme token on the Binance Smart Chain, designed to be worthless. An ever-increasing outstanding supply of mined PANTSU is given to anyone who requests, or can be sent directly as a tip to your best weeb friends, with only the gas fee as a cost, and without any hassle. A mined bonus is also added on top of every PANTSU transfer, rewarding users, and not holders.</p>
+	<p>PANTSU is an inflationary anime crypto meme token on the Binance Smart Chain. An ever-increasing outstanding supply of mined PANTSU is given to anyone who requests, or can be sent directly as a tip to your best weeb friends, with only the gas fee as a cost, and without any hassle. A mined bonus is also added on top of every PANTSU transfer, rewarding users, and not holders.</p>
 	<p>In order to ensure that the token is absolutely worthless, the token contract has not been audited, was written in an evening on two cups of coffee, does not use SafeMath, and has a trading pair with BUSD.</p>
 	<p>Contract: <a href="https://bscscan.com/address/0x211444986464222c014a215c9ec463a646e85469#code" target="_blank">0x211444986464222c014a215c9ec463a646e85469 &nbsp;<i class="fa fa-external-link-alt"></i></a>.</p>
 	<h2>How to use</h2>
@@ -480,7 +480,7 @@ async function connectMetaMask() {
 		tokenAddress = tokenAddressMainnet;
 		const testnet = document.getElementById('testnet');
 		testnet.hidden = true;
-	} else if (newChainId == 97) { // Binance Smart Chain Testnet
+	} else if (newChainId == 97 && window.location.host == 'localhost') { // Binance Smart Chain Testnet
 		tokenAddress = tokenAddressTestnet;
 		const testnet = document.getElementById('testnet');
 		testnet.hidden = false;
@@ -536,6 +536,7 @@ async function disconnectedMetaMask() {
 	overWhite.classList.remove("hiddenvisibility");
 	const click = document.getElementById('click');
 	click.classList.remove("spinanimation");
+	click.src = "./click.svg";
 	const wclick = document.getElementById('wclick');
 	wclick.classList.remove("pulseanimation");
 }
@@ -566,18 +567,25 @@ async function faucet() {
 	console.log('Get PANTSU');
 	const wclick = document.getElementById('wclick');
 	wclick.classList.add("pulseanimation");
+	const click = document.getElementById('click');
+	click.src = "./confirm.svg";
 	try {
-		await contract.methods.faucet().send();
+		await contract.methods.faucet().send({
+			gasPrice: '8500000000', // 8.5 gwei, hardcoded for now
+		});
 		console.log("Transaction confirmed");
 	} finally {
 		wclick.classList.remove("pulseanimation");
+		click.src = "./click.svg";
 	}
 	await updateBalance();
 }
 async function tip() {
 	console.log('Tip PANTSU');
 	const tipaddress = document.getElementById('tipaddress');
-	await contract.methods.faucetTo(tipaddress.value).send();
+	await contract.methods.faucetTo(tipaddress.value).send({
+		gasPrice: '8500000000', // 8.5 gwei, hardcoded for now
+	});
 	console.log("Transaction confirmed");
 }
 async function poll() {
