@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="shortcut icon" href="./pantsu_round.png" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<title>PANTSU — Pantsu Clicker</title>
+<style>
+/*
+light blue: #a9e6fa
+bright blue: #23c0f4
+dark blue: #076785
+light pink: #fba9d2
+bright pink: #f4248c
+dark pink: #850746
+*/
+
+body {
+	background-image: linear-gradient(0deg, #ffffff 25%, #faa9d2 25%, #faa9d2 50%, #ffffff 50%, #ffffff 75%, #faa9d2 75%, #faa9d2 100%);
+	background-size: 160.00px 160.00px;
+	padding: 0;
+	margin: 0;
+	color: #f4248c;
+}
+p {
+	font-size: 15px;
+	font-family: Helvetica, sans-serif;
+}
+li {
+	font-size: 15px;
+	font-family: Helvetica, sans-serif;
+}
+h2 {
+	color: #23c0f4;
+}
+a {
+	font-size: 15px;
+	font-family: Helvetica, sans-serif;
+	text-decoration: none;
+	color: #23c0f4;
+}
+a:visited {
+	color: #fba9d2;
+}
+a:hover {
+	color: #f4248c;
+}
+a:active {
+	color: #a9e6fa;
+}
+main {
+	width: 720px;
+	margin: 0 auto;
+	padding: 40px 20px 20px 20px;
+	background-color: white;
+	//box-shadow: 0 0 10px rgba(133, 7, 70, 0.125);
+	border-style: solid;
+	border-width: 0 2px 80px 2px;
+	border-color: #fba9d2;
+}
+main h1 {
+	padding: 0 0 20px 0;
+	margin: 0;
+}
+main h1 img {
+	padding: 0;
+	width: 100%;
+}
+.nomargin {
+	margin: 0;
+	padding: 0;
+}
+.get {
+	text-align: center;
+	margin: 0;
+	padding: 0;
+}
+.pantsu {
+	margin: 0;
+	padding: 0;
+	border-radius: 50%;
+	width: 400px;
+	height: 400px;
+	border-style: solid;
+	border-width: 40px;
+	border-color: #f4248c;
+	cursor: pointer;
+}
+.pantsu:hover {
+	box-shadow: 0 0 40px #23c0f4;
+}
+.pantsu:active {
+	box-shadow: 0 0 40px #a9e6fa;
+}
+.fixpos {
+	position: relative;
+	margin: -3.5px 0 0 0;
+	padding: 0;
+	width: 0;
+	height: 0;
+}
+@keyframes pulse {
+	0% {
+		opacity: 75%;
+	}
+	50% {
+		opacity: 25%;
+	}
+	100% {
+		opacity: 75%;
+	}
+}
+.wclick {
+	text-align: center;
+	margin: -480px 0 0 0;
+	height: 480px;
+	padding: 0;
+	pointer-events: none;
+	/* animation: pulse 1s infinite linear; */
+}
+@keyframes spin {
+	100% {
+		transform: rotate(360deg);
+	}
+}
+.click {
+	margin: 0;
+	padding: 0;
+	width: 480px;
+	height: 480px;
+	border-radius: 50%;
+	/* animation: spin 60s infinite linear; */
+}
+.new {
+	margin: -480px 0 0 0;
+	height: 460px;
+	padding: 0 0 20px 0;
+	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-family: Impact, sans-serif;
+	font-size: 80px;
+	line-height: 80px;
+	color: white;
+	text-shadow:
+		5px 5px 0 #f4248c,
+		-1px -1px 0 #f4248c,
+		1px -1px 0 #f4248c,
+		-1px 1px 0 #f4248c,
+		1px 1px 0 #f4248c;
+	/* visibility: hidden; */
+}
+.white {
+	position: relative;
+	margin: -480.5px 0 0 0;
+	padding: 0;
+	height: 480.5px;
+	background-color: rgba(255, 255, 255, 0.75);
+	z-index: 10;
+	/* visibility: hidden; */
+}
+.wwsource {
+	position: relative;
+	text-align: right;
+	vertical-align: center;
+	margin: -480px 0 0 0;
+	width: 600px;
+	z-index: 20;
+	pointer-events: none;
+}
+.wsource {
+	display: inline-block;
+	height: 480px;
+}
+.source {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	margin: 0;
+	padding: 0 20px 20px 0;
+	pointer-events: all;
+}
+.padleftright {
+	padding: 0 20px;
+}
+.pad {
+	padding: 40px 80px 20px 80px;
+}
+.center {
+	text-align: center;
+}
+.fatbutton {
+	display: inline-block;
+	color: white;
+	background-color: #f4248c;
+	height: 60px;
+	width: 100%;
+	border-radius: 10px;
+	text-align: center;
+	vertical-align: middle;
+	line-height: 60px;
+	font-size: 20px;
+	font-weight: bold;
+	color: white;
+	margin-top: 20px;
+}
+.fatbutton:visited {
+	color: white;
+}
+.fatbutton:hover {
+	box-shadow: 0 0 40px #23c0f4;
+	color: white;
+}
+.fatbutton:active {
+	box-shadow: 0 0 40px #a9e6fa;
+	color: white;
+}
+.solidborderlogo {
+	display: inline-block;
+	border-style: solid;
+	border-radius: 10px;
+	padding: 10px;
+	height: 53px;
+}
+.solidborderlogo img {
+	margin: 0 -15px 0 0;
+}
+.footer {
+	margin-top: 85px;
+	margin-bottom: -85px;
+	text-align: center;
+	color: white;
+}
+.quarteropacitydisabled {
+	opacity: 25%;
+	pointer-events: none;
+}
+.hiddenvisibility {
+	visibility: hidden;
+}
+.pulseanimation {
+	animation: pulse 1s infinite linear;
+}
+.spinanimation {
+	animation: spin 60s infinite linear;
+}
+.dwalletbox {
+	display: inline-block;
+	color: white;
+	background-color: #23c0f4;
+	width: 100%;
+	border-radius: 20px;
+}
+.dwalletbox p {
+	font-size: 17.5px;
+	padding: 0 20px;
+}
+#accountlink {
+	font-size: 17.5px;
+	color: white;
+}
+#accountlink:visited {
+	color: white;
+}
+#accountlink:hover {
+	color: white;
+	/* color: #f4248c;
+	text-shadow:
+		-1.5px -1.5px 0 white,
+		1.5px -1.5px 0 white,
+		-1.5px 1.5px 0 white,
+		1.5px 1.5px 0 white; */
+	/* font-style: italic; */
+}
+#accountlink:active {
+	color: #a9e6fa;
+}
+.walletbutton {
+	float: right;
+	line-height: 17.5px;
+	padding: 10px;
+	margin: -10px;
+	border-radius: 10px;
+	background-color: white;
+}
+#balancetext {
+	font-weight: bold;
+}
+#badchain {
+	font-weight: bold;
+	font-size: 20px;
+	text-align: center;
+}
+.tipbox {
+	padding: 40px 40px 0 40px;
+	margin: 0;
+}
+.tipaddress {
+	border-color: #f4248c;
+	padding: 0;
+	margin: 0;
+	border-style: solid;
+	border-radius: 20px 0 0 20px;
+	border-width: 2px 0 2px 2px;
+	width: calc(100% - 134px);
+	height: 40px;
+	padding-left: 10px;
+	color: #23c0f4;
+	outline: none;
+}
+.tipbutton {
+	border-color: #f4248c;
+	background-color: #f4248c;
+	padding: 0;
+	margin: 0;
+	width: 120px;
+	border-style: solid;
+	border-width: 2px;
+	border-radius: 0 20px 20px 0;
+	height: 44px;
+	color: white;
+	cursor: pointer;
+}
+.tipbutton:hover {
+	box-shadow: 0 0 20px #23c0f4;
+}
+.tipbutton:active {
+	box-shadow: 0 0 20px #a9e6fa;
+}
+</style>
+</head>
+<body>
+<main>
+	<h1><img src="pantsu_blue.png" alt="Pantsu Clicker"></h1>
+	<div class="get"><img id="pantsu" class="pantsu" src="https://cdn.kaetemi.be/dl/pantsu/thumbnails/263733.jpg" onclick="faucet()" alt="Get PANTSU"></div>
+	<div class="fixpos">&nbsp;</div>
+	<div id="wclick" class="wclick"><img id="click" class="click" src="./click.svg" alt="Click to get PANTSU"></div>
+	<div id="overnew" class="new">Get<br>PANTSU</div>
+	<div id="overwhite" class="white"></div>
+	<div class="wwsource"><div class="wsource"><a id="pantsulink" href="https://yande.re/post/show/263733" target="_blank" class="source">View&nbsp;&nbsp;<i class="fa fa-external-link-alt"></i></a></div></div>
+	<!--<p class="nomargin">&nbsp;</p>-->
+	<div id="onboardbox" class="pad">
+		<p hidden="true" id="badchain">Please switch your wallet to the Binance Smart Chain.</p>
+		<a class="fatbutton quarteropacitydisabled" href="javascript:connectMetaMask()" id="onboardbutton">Connect with MetaMask</a>
+		<p class="center"><a href="https://academy.binance.com/en/articles/connecting-metamask-to-binance-smart-chain" target="_blank">Install MetaMask&nbsp;&nbsp;<i class="fa fa-external-link-alt"></i></a></p>
+	</div>
+	<div hidden="true" id="walletbox" class="pad">
+		<div class="dwalletbox">
+			<p>Account: <a href="https://bscscan.com/" target="_blank" id="accountlink"><span id="accountname">...</span> &nbsp;<i class="fa fa-external-link-alt"></i></a></p>
+			<p>Balance: <span id="balancetext">...</span> PANTSU <span hidden="true" id="testnet"><em>(Testnet)</em></span> <span class="walletbutton"><a href="javascript:addToken()">Add to wallet</a></span></p>
+		</div>
+		<form class="tipbox">
+			<input class="tipaddress" id="tipaddress" placeholder="Recipient Address" type="text"><input class="tipbutton" type="button" onclick="tip()" value="Tip PANTSU">
+		</form>
+	</div>
+	<div class="padleftright">
+	<h2>PANTSU</h2>
+	<p>PANTSU is an inflationary anime crypto meme token on the Binance Smart Chain, designed to be worthless. An ever-increasing outstanding supply of mined PANTSU is given to anyone who requests, or can be sent directly as a tip to your best weeb friends, with only the gas fee as a cost, and without any hassle. A mined bonus is also added on top of every PANTSU transfer, rewarding users, and not holders.</p>
+	<p>In order to ensure that the token is absolutely worthless, the token contract has not been audited, was written in an evening on two cups of coffee, does not use SafeMath, and has a trading pair with BUSD.</p>
+	<p>Contract: <a href="https://bscscan.com/address/0x211444986464222c014a215c9ec463a646e85469#code" target="_blank">0x211444986464222c014a215c9ec463a646e85469 &nbsp;<i class="fa fa-external-link-alt"></i></a>.</p>
+	<h2>How to use</h2>
+	<p>Click on the “Get PANTSU” button to receive PANTSU crypto tokens from the faucet. The button changes to a different thumbnail, from an expertly hand-curated pool of pantsu illustrations, anytime you send or receive PANTSU.</p>
+	<p>Use the “Tip PANTSU” function to send PANTSU from the faucet directly to someone else. When you transfer PANTSU using your wallet, the receiver will also get an additional bonus.</p>
+	<h2>Links</h2>
+	<p><em>Social</em> — <a href="https://twitter.com/PantsuClicker" target="_blank"><i class="fab fa-twitter"></i>&nbsp;Twitter</a>, <a href="https://t.me/PantsuClicker" target="_blank"><i class="fab fa-telegram"></i>&nbsp;Telegram</a>, <a href="https://www.reddit.com/r/PantsuClicker/" target="_blank"><i class="fab fa-reddit"></i>&nbsp;Reddit</a></p>
+	<p><em>Charts</em> — <a href="https://charts.bogged.finance/?token=0x211444986464222c014A215C9eC463A646E85469" target="_blank"><i class="fa fa-eye"></i>&nbsp;BoggedFinance</a>, <a href="https://poocoin.app/tokens/0x211444986464222c014a215c9ec463a646e85469" target="_blank"><i class="fa fa-poo"></i>&nbsp;PooCoin</a></p>
+	<p><em>Trade</em> — <a href="https://exchange.pancakeswap.finance/#/swap?outputCurrency=0x211444986464222c014a215c9ec463a646e85469&inputCurrency=0xe9e7cea3dedca5984780bafc599bd69add087d56" target="_blank"><i class="fa fa-dollar-sign"></i>&nbsp;PancakeSwap (BUSD)</a>, <a href="https://exchange.pancakeswap.finance/#/swap?outputCurrency=0x211444986464222c014a215c9ec463a646e85469&inputCurrency=BNB" target="_blank"><i class="fa fa-coins"></i>&nbsp;PancakeSwap (BNB)</a></p>
+	<p><em>Contracts</em> — <a href="https://bscscan.com/token/0x211444986464222c014a215c9ec463a646e85469" target="_blank"><i class="fa fa-file-contract"></i>&nbsp;PANTSU Token</a>, <a href="https://bscscan.com/address/0x4d0a86e5f180a814be56184c66ab1b9fcb927a0e" target="_blank"><i class="fa fa-file-contract"></i>&nbsp;PANTSU-BUSD LP</a>, <a href="https://bscscan.com/address/0x1fe8aed36051e90dc5c7724885f9326bab4e5f06" target="_blank"><i class="fa fa-file-contract"></i>&nbsp;PANTSU-BNB LP</a></p>
+	<h2>Team</h2>
+	<p><a href="https://polyverse.dev" target="_blank" class="solidborderlogo"><img src="./pyvse_blue_256.png" alt="Polyverse"><i class="fa fa-external-link-alt"></i></a></p>
+	<h2>Development Schedule</h2>
+	<p>The majority of development time is spent expertly hand-curating pantsu illustrations for the faucet.</p>
+	<p>Donations are welcome on account 0xC11F3D69799693a947EE409662859Ee238631BFa.</p>
+	<h2>Future Opportunities</h2>
+	<p>Other tokens in the future may use the list of PANTSU holders as a reference for fair initial distribution airdrops.</p>
+	<h2>Technical</h2>
+	<p>Whenever PANTSU are transferred, or requested from the faucet, an attempt is made to mine a block. With each network block, the number of blocks that can be mined increases. Every successfully mined block increases the outstanding supply. The number of tokens added to the outstanding supply also increases with each block mined. There are no pre-mined tokens, and no owner-only functions.</p>
+	<p>The faucet freely provides 1/64 of the outstanding supply to anyone who requests, the only cost is the gas fee. It can also be used to directly tip tokens to another wallet. Every transfer also adds up to 1/8 of the outstanding supply as a bonus to the receiver, capped to 1/8 of the transfer amount.</p>
+	<p>If you prefer to get rid of your tokens, you can always send them back to the token contract address. They will be temporarily removed from the current total supply, and added back into the outstanding supply for another lucky person to receive.</p>
+	<h2>Contact</h2>
+	<p><a href="email:support@pantsu.click" target="_blank"><i class="fa fa-envelope"></i> support@pantsu.click</a></p>
+	<h2>Disclaimers</h2>
+	<p>Featured illustrations are property of their respective owners, and are included only as thumbnails along with a link to further information about the illustration’s artist and download source.</p>
+	</div>
+	<div class="footer"><p><em>“PANTSU”</em></p></div>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.3.5/web3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/9.0.1/bignumber.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crc-32/1.2.0/crc32.min.js"></script>
+<script>
+let chainId;
+let badChain = false;
+let tokenAddress;
+const tokenAddressMainnet = '0x211444986464222c014a215c9ec463a646e85469';
+const tokenAddressTestnet = '0x985236Ac35B9aE32b8a75C0Bb1D171a5c6Cd5818';
+const tokenSymbol = 'PANTSU';
+const tokenDecimals = 18;
+const tokenImage = 'https://cdn.kaetemi.be/dl/icons/pantsu_square.png';
+const jsonInterface = [{
+	"type": "function",
+	"name": "faucet",
+	"stateMutability": "nonpayable",
+	"inputs": [],
+	"outputs": [],
+},{
+	"type": "function",
+	"name": "faucetTo",
+	"stateMutability": "nonpayable",
+	"inputs": [{"name":"recipient","type":"address"}],
+	"outputs": [],
+},{
+	"type":"function",
+	"name":"balanceOf",
+	"stateMutability":"view",
+	"inputs":[{"name":"account","type":"address"}],
+	"outputs":[{"name":"","type":"uint256"}]
+}];
+const defaultThumbnail = 263733;
+const thumbnails = [
+	107717, 124583, 144381, 145595, 178477, 226248, 229455, 234839, 238989, // 263733, 
+	269435, 277335, 289391, 291417, 294191, 297464, 313411, 313526, 321141, 327509, 
+	331531, 331825, 335345, 336364, 345436, 346077, 346525, 348262, 351611, 357117, 
+	357191, 368271, 371277, 376167, 381832, 384679, 384781, 386300, 400109, 405748, 
+	406098, 406813, 420530, 440041, 457754, 492574, 539895, 540311, 568570, 569381, 
+	575212, 590234, 606520, 612324, 617025, 632532, 656612, 659317, 662678, 667908, 
+	671465, 672289, 675076, 678967, 691669, 694386, 700387, 707304, 712580, 713522, 
+	717321, 720330, 720550, 728021, 728284, 736801, 741196, 742280, 743751, 747418, 
+	749431, 749535, 750422, 750521, 754405, 757436, 757506, 757644, 761304, 762881, 
+	764123, 764419, 764484, 766878, 766879, 766883, 766913, 771170, 772380, 772476, 
+	778214, 778290, 780224, 780733,
+];
+let thumbnailIdx;
+let account;
+let web3;
+let contract;
+let balance = '0';
+async function checkConnected() {
+	const onboardButton = document.getElementById('onboardbutton');
+	if (typeof window.ethereum !== 'undefined') {
+		console.log('MetaMask is installed');
+		const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+		if (accounts.length > 0) {
+			console.log('MetaMask is already connected');
+			connectMetaMask();
+		} else {
+			onboardButton.classList.remove("quarteropacitydisabled");
+		}
+	} else {
+		console.log('MetaMask is not installed...');
+		console.log(window.ethereum);
+	}
+}
+async function addToken() {
+	const wasAdded = await window.ethereum.request({
+		method: 'wallet_watchAsset',
+		params: {
+			type: 'ERC20',
+			options: {
+				address: tokenAddress,
+				symbol: tokenSymbol,
+				decimals: tokenDecimals,
+				image: tokenImage,
+			},
+		},
+	});
+}
+async function connectMetaMask() {
+	web3 = new Web3(window.ethereum);
+	const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+	const newChainId = await window.ethereum.request({ method: 'eth_chainId' });
+	if (newChainId == 56) { // Binance Smart Chain Mainnet
+		tokenAddress = tokenAddressMainnet;
+		const testnet = document.getElementById('testnet');
+		testnet.hidden = true;
+	} else if (newChainId == 97) { // Binance Smart Chain Testnet
+		tokenAddress = tokenAddressTestnet;
+		const testnet = document.getElementById('testnet');
+		testnet.hidden = false;
+	} else {
+		badChain = true;
+		const badchain = document.getElementById('badchain');
+		badchain.hidden = false;
+		return;
+	}
+	const badchain = document.getElementById('badchain');
+	badChain = false;
+	badchain.hidden = true;
+	contract = new web3.eth.Contract(jsonInterface, tokenAddress, {
+		from: accounts[0],
+	});
+	chainId = newChainId;
+	account = accounts[0];
+	
+	const onboardBox = document.getElementById('onboardbox');
+	onboardBox.hidden = true;
+	const walletBox = document.getElementById('walletbox');
+	walletBox.hidden = false;
+	
+	const overNew = document.getElementById('overnew');
+	overNew.classList.add("hiddenvisibility");
+	const overWhite = document.getElementById('overwhite');
+	overWhite.classList.add("hiddenvisibility");
+	const click = document.getElementById('click');
+	click.classList.add("spinanimation");
+	
+	const accountName = document.getElementById('accountname');
+	accountName.innerHTML = account;
+	const accountLink = document.getElementById('accountlink');
+	accountLink.href = "https://bscscan.com/address/" + account + "#tokentxns";
+	const balanceText = document.getElementById('balancetext');
+	balanceText.innerHTML = '...';
+	balance = '0';
+	
+	await updateBalance();
+}
+async function disconnectedMetaMask() {
+	chainId = null;
+	account = null;
+	
+	const onboardBox = document.getElementById('onboardbox');
+	onboardBox.hidden = false;
+	const walletBox = document.getElementById('walletbox');
+	walletBox.hidden = true;
+	
+	const overNew = document.getElementById('overnew');
+	overNew.classList.remove("hiddenvisibility");
+	const overWhite = document.getElementById('overwhite');
+	overWhite.classList.remove("hiddenvisibility");
+	const click = document.getElementById('click');
+	click.classList.remove("spinanimation");
+	const wclick = document.getElementById('wclick');
+	wclick.classList.remove("pulseanimation");
+}
+async function updateBalance() {
+	let newBalance = await contract.methods.balanceOf(account).call();
+	const balanceText = document.getElementById('balancetext');
+	if (balance != newBalance || balanceText.innerHTML == '...') {
+		balance = newBalance;
+		const bal = new BigNumber(balance);
+		const dbal = bal.div(new BigNumber(10).pow(tokenDecimals));
+		balanceText.innerHTML = dbal.toFixed(3);
+		console.log("New balance: " + dbal);
+		let newThumbnailIdx = (CRC32.str(balance) & 0x7FFFFFFF) % thumbnails.length;
+		thumbnailIdx = (newThumbnailIdx === thumbnailIdx)
+			? ((newThumbnailIdx + 1) % thumbnails.length)
+			: newThumbnailIdx;
+		const thumbnail = balance == '0'
+			? defaultThumbnail
+			: thumbnails[thumbnailIdx];
+		console.log("Thumbnail: " + thumbnail);
+		const pantsu = document.getElementById('pantsu');
+		pantsu.src = "https://cdn.kaetemi.be/dl/pantsu/thumbnails/" + thumbnail + ".jpg";
+		const pantsuLink = document.getElementById('pantsulink');
+		pantsuLink.href = "https://yande.re/post/show/" + thumbnail;
+	}
+}
+async function faucet() {
+	console.log('Get PANTSU');
+	const wclick = document.getElementById('wclick');
+	wclick.classList.add("pulseanimation");
+	try {
+		await contract.methods.faucet().send();
+		console.log("Transaction confirmed");
+	} finally {
+		wclick.classList.remove("pulseanimation");
+	}
+	await updateBalance();
+}
+async function tip() {
+	console.log('Tip PANTSU');
+	const tipaddress = document.getElementById('tipaddress');
+	await contract.methods.faucetTo(tipaddress.value).send();
+	console.log("Transaction confirmed");
+}
+async function poll() {
+	if (account || badChain) {
+		const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+		const newChainId = await window.ethereum.request({ method: 'eth_chainId' });
+		if (accounts.length == 0 || accounts[0] != account || chainId != newChainId) {
+			await disconnectedMetaMask();
+			await checkConnected();
+			return;
+		}
+		await updateBalance();
+	}
+}
+window.addEventListener('DOMContentLoaded', checkConnected);
+setInterval(poll, 3000);
+</script>
+</body>
+</html>
