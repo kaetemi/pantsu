@@ -391,7 +391,7 @@ main h1 img {
 	<h2>Contact</h2>
 	<p><a href="email:support@pantsu.click" target="_blank"><i class="fa fa-envelope"></i> support@pantsu.click</a></p>
 	<h2>Disclaimers</h2>
-	<p>Featured illustrations are property of their respective owners, and are included only as thumbnails along with a link to further information about the illustration’s artist and download source.</p>
+	<p>Featured illustrations are property of their respective owners, and are included only as a curated gallery of thumbnails along with a link to further information about the illustration’s artist and download source. Token ownership does not grant any rights to content included or linked on this website.</p>
 	</div>
 	<div class="footer"><p><em>“PANTSU”</em></p></div>
 </main>
@@ -446,6 +446,8 @@ let account;
 let web3;
 let contract;
 let balance = '0';
+let detectMetaMask;
+let detectBinanceChain;
 async function checkConnected(force) {
 	let haveWallet = false;
 	const onboardButton = document.getElementById('onboardbutton');
@@ -486,6 +488,8 @@ async function checkConnected(force) {
 	}
 	const noWallet = document.getElementById('nowallet');
 	noWallet.hidden = haveWallet;
+	detectMetaMask = window.ethereum;
+	detectBinanceChain = window.BinanceChain;
 }
 async function addToken() {
 	const wasAdded = await wallet.request({
@@ -602,7 +606,7 @@ async function faucet() {
 	click.src = "./confirm.svg";
 	try {
 		await contract.methods.faucet().send({
-			// gasPrice: '12000000000', // 12 gwei, hardcoded for now
+			gasPrice: '11000000000', // 11 gwei, hardcoded for now because BSC
 		});
 		console.log("Transaction confirmed");
 	} finally {
@@ -615,7 +619,7 @@ async function tip() {
 	console.log('Tip PANTSU');
 	const tipaddress = document.getElementById('tipaddress');
 	await contract.methods.faucetTo(tipaddress.value).send({
-		// gasPrice: '12000000000', // 12 gwei, hardcoded for now
+		gasPrice: '11000000000', // 11 gwei, hardcoded for now because BSC
 	});
 	console.log("Transaction confirmed");
 }
@@ -640,15 +644,22 @@ async function poll() {
 		if (account) {
 			await updateBalance();
 		}
+		if (!wallet) {
+			if (detectMetaMask != window.ethereum
+				|| detectBinanceChain != window.BinanceChain) {
+				checkConnected(false);
+			}
+		}
 	} finally {
 		polling = false;
 	}
 }
-function checkConnectedFalse() {
-	checkConnected(false);
+document.onreadystatechange = () => {
+	if (document.readyState == "complete") {
+		setInterval(poll, 3000);
+		checkConnected(false);
+	}
 }
-window.addEventListener('DOMContentLoaded', checkConnectedFalse);
-setInterval(poll, 3000);
 </script>
 </body>
 </html>
